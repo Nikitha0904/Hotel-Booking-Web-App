@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Hotel Booking Web App",
   description: "Book a hotel of your choice",
-  icons: {icon: '/image.png'}
+  icons: {icon: '/logo.png'}
 };
 
 export default function RootLayout({
@@ -22,8 +22,14 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       
       <body className={inter.className}>
+        <main className="flex flex-col min-h-screen bg-secondary">
         <NavBar/>
-      {children}</body>
+        <section className="flex-grow">
+        {children}
+        </section>
+      
+      </main>
+      </body>
     </html>
     </ClerkProvider>
   );
