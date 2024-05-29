@@ -36,6 +36,8 @@ import {
 } from "@/components/ui/dialog"
 
 import AddRoomForm from "../room/AddRoomForm";
+import { Separator } from "@/components/ui/separator"
+import RoomCard from "../room/RoomCard";
 
 
 
@@ -588,14 +590,14 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
                 </Button>}
 
                 {hotel && <Button onClick={() => router.push(`/hotel-details/${hotel.id}`)} variant={'outline'} type="button"><Eye className="mr-2 h-4 w-4" /> View</Button>}
-                
+
 
                 {hotel && <Dialog open={open} onOpenChange={setOpen}>
                   <DialogTrigger>
-                      <Button type="button" variant='outline' className="max-w-{150px}">
-                        <Plus className="mr-2 h-4 w-4"/>Add Room
-                      </Button>
-                    </DialogTrigger>
+                    <Button type="button" variant='outline' className="max-w-{150px}">
+                      <Plus className="mr-2 h-4 w-4" />Add Room
+                    </Button>
+                  </DialogTrigger>
                   <DialogContent className="max-w-[900px] w-[90%]">
                     <DialogHeader className="px-2">
                       <DialogTitle>Add a Room</DialogTitle>
@@ -603,8 +605,8 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
                         Add Deatils about a room in your hotel
                       </DialogDescription>
                     </DialogHeader>
-                    <AddRoomForm hotel={hotel} handleDialogueOpen={handleDialogueOpen}/>
-                  
+                    <AddRoomForm hotel={hotel} handleDialogueOpen={handleDialogueOpen} />
+
                   </DialogContent>
                 </Dialog>
                 }
@@ -614,6 +616,16 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
                   </Button>}
 
               </div>
+              {hotel && !!hotel.rooms.length && <div>
+                <Separator />
+                <h3 className="text-lg font-semibold my-4">Hotel Rooms</h3>
+                <div className="grid grid-cols-1 2xl:grid-cols-2 gap-6">
+                  {hotel.rooms.map(room => {
+                    return <RoomCard key={room.id} hotel={hotel} room={room} />
+                  })}
+                </div>
+              </div>
+              }
             </div>
           </div>
 
