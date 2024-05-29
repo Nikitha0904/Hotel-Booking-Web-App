@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import { UploadButton } from "../uploadthing";
 import { useToast } from "../ui/use-toast";
 import Image from "next/image";
-import { Eye, Loader, Loader2, PencilLine, Terminal, Trash, XCircle } from "lucide-react";
+import { Eye, Loader, Loader2, PencilLine, Plus, Terminal, Trash, XCircle } from "lucide-react";
 import { Button } from "../ui/button";
 import axios from "axios";
 import useLocation from "@/hooks/useLocation";
@@ -37,6 +37,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import AddRoomForm from "../room/AddRoomForm";
 
 
 
@@ -89,7 +90,7 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
   const [cities, setCities] = useState<ICity[]>([])
   const [isLoading, setIsLoading] = useState(false);
   const [isHotelDeleting, setIsHotelDeleting] = useState(false);
-
+  const [open, setOpen] = useState(false);
 
   const { toast } = useToast()
   const router = useRouter()
@@ -234,6 +235,10 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
     }).finally(() => {
       setImageIsDeleting(false);
     })
+  }
+
+  const handleDialogueOpen = () => {
+    setOpen(prev => !prev)
   }
 
   return (
@@ -586,6 +591,27 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
 
                 {hotel && <Button onClick={() => router.push(`/hotel-details/${hotel.id}`)} variant={'outline'} type="button"><Eye className="mr-2 h-4 w-4" /> View</Button>}
 
+                {hotel && <AlertDialog open={open} onOpenChange={setOpen}>
+                  <AlertDialogTrigger>
+                      <Button type="button" variant='outline' className="max-w-{150px}">
+                        <Plus className="mr-2 h-4 w-4"/>Add Room
+                      </Button>
+                    </AlertDialogTrigger>
+                  <AlertDialogContent className="max-w-{900px} w-{90%}">
+                    <AlertDialogHeader className="px-2">
+                      <AlertDialogTitle>Add a Room</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Add Deatils about a room in your hotel
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AddRoomForm hotel={hotel} handleDialogueOpen={handleDialogueOpen}/>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction>Continue</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+                }
                 {hotel ? <Button className="max-w-[150px]" disabled={isLoading}>{isLoading ? <><Loader2 className="mr-2 h-4 w-4" /> Updating</> : <><PencilLine className="mr-2 h-4 w-4" />Update</>}</Button> :
                   <Button className="max-w-[150px]" disabled={isLoading}>
                     {isLoading ? <><Loader2 className="mr-2 h-4 w-4" /> Creating</> : <><PencilLine className="mr-2 h-4 w-4" />Create Hotel</>}

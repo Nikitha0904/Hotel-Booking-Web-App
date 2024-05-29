@@ -44,6 +44,7 @@ model Room {
   title          String
   description    String   @db.LongText
   bedCount       Int      @default(0)
+  guestCount     Int      @default(0)
   bathroomCount  Int      @default(0)
   kingBed        Int      @default(0)
   queenBed       Int      @default(0)
