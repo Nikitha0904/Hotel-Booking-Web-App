@@ -13,7 +13,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Hotel Booking Web App",
   description: "Book a hotel of your choice",
-  icons: {icon: '/logo.png'}
+  icons: '/logo.png'
 };
 
 export default function RootLayout({
@@ -23,27 +23,27 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-    <html lang="en" suppressHydrationWarning>
-      
-      <body className={inter.className}>
-        <ThemeProvider
-        attribute="class"
-        defaultTheme="system"
-        enableSystem
-        disableTransitionOnChange>
-          <Toaster/>
-        <main className="flex flex-col min-h-screen bg-secondary">
-        <NavBar/>
-        <section className="flex-grow">
-          <Container>
-        {children}
-        </Container>
-        </section>
-      
-      </main>
-      </ThemeProvider> 
-      </body>
-    </html>
+      <html lang="en" suppressHydrationWarning>
+
+        <body className={inter.className}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange>
+            <Toaster />
+            <main className="flex flex-col min-h-screen bg-secondary">
+              <NavBar />
+              <section className="flex-grow">
+                <Container>
+                  {children}
+                </Container>
+              </section>
+
+            </main>
+          </ThemeProvider>
+        </body>
+      </html>
     </ClerkProvider>
   );
 }
