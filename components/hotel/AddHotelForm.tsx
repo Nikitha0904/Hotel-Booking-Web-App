@@ -27,16 +27,14 @@ import {
 import { useRouter } from "next/navigation";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+
 import AddRoomForm from "../room/AddRoomForm";
 
 
@@ -590,27 +588,25 @@ const AddHotelForm = ({ hotel }: AddHotelFormProps) => {
                 </Button>}
 
                 {hotel && <Button onClick={() => router.push(`/hotel-details/${hotel.id}`)} variant={'outline'} type="button"><Eye className="mr-2 h-4 w-4" /> View</Button>}
+                
 
-                {hotel && <AlertDialog open={open} onOpenChange={setOpen}>
-                  <AlertDialogTrigger>
+                {hotel && <Dialog open={open} onOpenChange={setOpen}>
+                  <DialogTrigger>
                       <Button type="button" variant='outline' className="max-w-{150px}">
                         <Plus className="mr-2 h-4 w-4"/>Add Room
                       </Button>
-                    </AlertDialogTrigger>
-                  <AlertDialogContent className="max-w-{900px} w-{90%}">
-                    <AlertDialogHeader className="px-2">
-                      <AlertDialogTitle>Add a Room</AlertDialogTitle>
-                      <AlertDialogDescription>
+                    </DialogTrigger>
+                  <DialogContent className="max-w-[900px] w-[90%]">
+                    <DialogHeader className="px-2">
+                      <DialogTitle>Add a Room</DialogTitle>
+                      <DialogDescription>
                         Add Deatils about a room in your hotel
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
+                      </DialogDescription>
+                    </DialogHeader>
                     <AddRoomForm hotel={hotel} handleDialogueOpen={handleDialogueOpen}/>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction>Continue</AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
+                  
+                  </DialogContent>
+                </Dialog>
                 }
                 {hotel ? <Button className="max-w-[150px]" disabled={isLoading}>{isLoading ? <><Loader2 className="mr-2 h-4 w-4" /> Updating</> : <><PencilLine className="mr-2 h-4 w-4" />Update</>}</Button> :
                   <Button className="max-w-[150px]" disabled={isLoading}>
