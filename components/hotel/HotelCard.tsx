@@ -5,9 +5,10 @@ import { HotelWithRooms } from "./AddHotelForm"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
 import AmenityItem from "../AmenityItem"
-import { Dumbbell, MapPin, Waves } from "lucide-react"
+import { Dumbbell, MapPin} from "lucide-react"
 import useLocation from "@/hooks/useLocation"
 import { Button } from "../ui/button"
+import { FaSwimmer } from "react-icons/fa"
 
 const HotelCard = ({ hotel }: { hotel: HotelWithRooms }) => {
     const pathname = usePathname()
@@ -18,7 +19,7 @@ const HotelCard = ({ hotel }: { hotel: HotelWithRooms }) => {
     const country = getCountryByCode(hotel.country)
 
     return (
-        <div onClick={() => !isMyHotels && router.push(`/hotels-details/${hotel.id}`)} className={cn('col-span-1 cursor-pointer transition hover:scale-105', isMyHotels && 'cursor-default')}>
+        <div onClick={() => !isMyHotels && router.push(`/hotel-details/${hotel.id}`)} className={cn('col-span-1 cursor-pointer transition hover:scale-105', isMyHotels && 'cursor-default')}>
             <div className="flex gap-2 bg-background/50 border border-primary/10 rounded-lg">
                 <div className="flex-1 aspect-square overflow-hidden relative w-full h-[210px] rounded-s-lg">
                     <Image
@@ -36,7 +37,7 @@ const HotelCard = ({ hotel }: { hotel: HotelWithRooms }) => {
                             <MapPin className="size-4" />{country?.name},{hotel.city}
                         </AmenityItem>
                         {hotel.SwimmingPool && <AmenityItem>
-                            <Waves className="size-4" /> Pool
+                            <FaSwimmer size={18} /> Pool
                         </AmenityItem>}
                         {hotel.gym && <AmenityItem>
                             <Dumbbell className="size-4" /> Gym
@@ -44,7 +45,7 @@ const HotelCard = ({ hotel }: { hotel: HotelWithRooms }) => {
                     </div>
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-1">
-                            {hotel?.rooms && hotel.rooms.length > 0 && hotel.rooms[0]?.roomPrice && (
+                            {hotel?.rooms[0]?.roomPrice && (
                                 <>
                                     <div className="font-semibold text-base">${hotel.rooms[0].roomPrice}</div>
                                     <div className="text-xs">/24hrs</div>
