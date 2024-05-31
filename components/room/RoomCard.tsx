@@ -4,7 +4,7 @@ import { Booking, Hotel, Room } from "@prisma/client";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
 import Image from "next/image";
 import AmenityItem from "../AmenityItem";
-import { AirVent, Bath, Bed, BedDouble, Castle, Home, Loader2, MountainSnow, Pencil, Plus, Ship, Trash, Trees, Tv, Users, UtensilsCrossed, VolumeX, Wifi } from "lucide-react";
+import { AirVent, Bath, Bed, BedDouble, Castle, Home, Loader2, MountainSnow, Pencil, Plus, Ship, Trash, Trees, Tv, Users, UtensilsCrossed, VolumeX, Wand2, Wifi } from "lucide-react";
 import { Separator } from "../ui/separator";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "../ui/button";
@@ -17,6 +17,8 @@ import { DatePickerWithRange } from "./DateRangePicker";
 import { DateRange } from "react-day-picker";
 import { differenceInCalendarDays } from "date-fns";
 import { Checkbox } from "../ui/checkbox";
+import { useAuth } from "@clerk/nextjs";
+import useBookRoom from "@/hooks/useBookRoom";
 
 
 interface RoomCardProps {
@@ -28,21 +30,24 @@ interface RoomCardProps {
 }
 
 const RoomCard = ({ hotel, room, bookings = [] }: RoomCardProps) => {
+    const {setRoomData,paymentIntentId,setClientSecret,setPaymentIntentId} =useBookRoom()
     const [isLoading, setIsLoading] = useState(false)
+    const [bookingIsLoading,setBookingIsLoading] = useState(false)
     const [open, setOpen] = useState(false)
     const [date, setDate] = useState<DateRange | undefined>()
-    const [totalPrice,setTotalPrice] = useState(room.roomPrice)
-    const [includeBreakFast,setIncludeBreakFast] = useState(false)
-    const [days,setDays]=useState(1)
+    const [totalPrice, setTotalPrice] = useState(room.roomPrice)
+    const [includeBreakFast, setIncludeBreakFast] = useState(false)
+    const [days, setDays] = useState(1)
 
     const pathname = usePathname()
     const router = useRouter()
     const { toast } = useToast()
+    const {userId} = useAuth()
     const isHotelDetailsPage = pathname.includes('hotel-details')
 
 
-    useEffect(()=>{
-        if(date && date.from && date.to){
+    useEffect(() => {
+        if (date && date.from && date.to) {
             const dayCount = differenceInCalendarDays(
                 date.to,
                 date.from
@@ -50,18 +55,18 @@ const RoomCard = ({ hotel, room, bookings = [] }: RoomCardProps) => {
 
             setDays(dayCount)
 
-            if(dayCount && room.roomPrice){
-                if(includeBreakFast && room.breakFastPrice){
-                    setTotalPrice((dayCount * room.roomPrice) + (dayCount * room.breakFastPrice) )
-                }else{
+            if (dayCount && room.roomPrice) {
+                if (includeBreakFast && room.breakFastPrice) {
+                    setTotalPrice((dayCount * room.roomPrice) + (dayCount * room.breakFastPrice))
+                } else {
                     setTotalPrice(dayCount * room.roomPrice)
                 }
 
-            }else{
+            } else {
                 setTotalPrice(room.roomPrice)
             }
         }
-    },[date,room.roomPrice,includeBreakFast])
+    }, [date, room.roomPrice, includeBreakFast])
 
 
 
@@ -94,6 +99,39 @@ const RoomCard = ({ hotel, room, bookings = [] }: RoomCardProps) => {
                 description: 'Something went wrong !'
             })
         })
+    }
+
+    const handleBookRoom =()=>{
+        if(!userId) return toast({
+            variant: 'destructive',
+            description: 'Something went wrong !'
+        })
+
+        if(!hotel?.userId) return toast({
+            variant: 'destructive',
+            description: 'Something went wrong, refresh the page and try again!'
+        })
+
+        if(date?.from && date?.to) {
+            setBookingIsLoading(true);
+
+            const bookingRoomData = {
+                room,
+                totalPrice,
+                breakFastIncluded:includeBreakFast,
+                startDate: date.from,
+                endDate:date.to,
+            }
+
+            setRoomData(bookingRoomData)
+            //api call is required
+            
+        } else {
+            toast({
+                variant: 'destructive',
+                description: 'Oops! Select Date'
+            })
+        }
     }
 
     return (<Card>
@@ -140,12 +178,18 @@ const RoomCard = ({ hotel, room, bookings = [] }: RoomCardProps) => {
                         room.breakFastPrice > 0 && <div>
                             <div className="mb-2">Do you want to be served breakfast each day</div>
                             <div className="flex items-center space-x-2">
-                                <Checkbox id="breakFast" onCheckedChange={(value)=>setIncludeBreakFast(!!value)}/>
+                                <Checkbox id="breakFast" onCheckedChange={(value) => setIncludeBreakFast(!!value)} />
                                 <label htmlFor="breakFast" className="text-sm">Include BreakFast</label>
                             </div>
                         </div>
                     }
-                    <div>Total Price: <span className="font-bold">${totalPrice}</span>for <span className="font-bold">{days} Days</span></div>
+                    <div>
+                        Total Price: <span className="font-bold">${totalPrice}</span> for <span className="font-bold">{days} Days</span>
+                    </div>
+                    <Button onClick={()=>handleBookRoom()} disabled={bookingIsLoading} type="button">
+                        {bookingIsLoading?<Loader2 className="mr-2 h-4 w-4"/>:<Wand2 className="mr-2 h-4 w-4"/>}
+                        {bookingIsLoading?'Loading':'Book Room'}
+                    </Button>
                 </div> : <div className="flex w-full justify-between">
                     <Button disabled={isLoading} type="button" variant="ghost" onClick={() => handleRoomDelete(room)}>
                         {isLoading ? <><Loader2 className="mr-2 h-4 w-4" />Deleting...</> : <><Trash className="mr-2 h-4 w-4" />Delete</>}
